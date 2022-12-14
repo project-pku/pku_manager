@@ -1,12 +1,11 @@
 import 'dart:developer' as dev;
 import 'dart:io';
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:pku_manager/core/pku_collection/pku_box.dart';
 import '../json_util.dart';
 
-class PkuCollection extends ChangeNotifier {
+class PkuCollection {
   final Directory dir;
   late PkuBox currentBox;
   late _PkuCollectionConfig _config;
@@ -23,7 +22,6 @@ class PkuCollection extends ChangeNotifier {
   set currentBoxID(int id) {
     _config.currentBoxID = id;
     _writeConfig();
-    notifyListeners();
   }
 
   // Private methods

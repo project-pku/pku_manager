@@ -4,15 +4,19 @@ import '../core/pku_collection/pku_collection_manager.dart';
 
 class BoxPageVM {
   final PkuCollectionManager pkucm;
-  late final BoxInfoStateNotifier boxInfoN;
+  late final BoxPanelInfoStateNotifier boxInfoN;
 
   BoxPageVM(this.pkucm) {
-    boxInfoN = BoxInfoStateNotifier();
+    boxInfoN = BoxPanelInfoStateNotifier();
     updateState(); //init view
   }
 
   void updateState() {
-    boxInfoN.updateState(pkucm.pkuCollection.currentBoxName, "pku/OT");
+    boxInfoN.updateState(
+        pkucm.pkuCollection.currentBoxID,
+        pkucm.pkuCollection.currentBoxName,
+        "pku/OT",
+        pkucm.pkuCollection.boxNames);
   }
 
   void changeBox(int boxNum) {
@@ -21,26 +25,24 @@ class BoxPageVM {
   }
 }
 
-@immutable
-class BoxListState {
-  final List<String> boxNames;
+class BoxPanelInfoStateNotifier extends StateNotifier<BoxPanelInfoState> {
+  BoxPanelInfoStateNotifier() : super(const BoxPanelInfoState._empty());
 
-  const BoxListState(this.boxNames);
-}
-
-class BoxInfoStateNotifier extends StateNotifier<BoxInfoState> {
-  BoxInfoStateNotifier() : super(const BoxInfoState._empty());
-
-  void updateState(String currentBoxName, String collectionName) {
-    state = BoxInfoState(currentBoxName, collectionName);
+  void updateState(int currentBoxID, String currentBoxName,
+      String collectionName, List<String> boxNames) {
+    state = BoxPanelInfoState(
+        currentBoxID, currentBoxName, collectionName, boxNames);
   }
 }
 
 @immutable
-class BoxInfoState {
+class BoxPanelInfoState {
+  final int currentBoxID;
   final String currentBoxName;
   final String collectionName;
+  final List<String> boxNames;
 
-  const BoxInfoState(this.currentBoxName, this.collectionName);
-  const BoxInfoState._empty() : this("", "");
+  const BoxPanelInfoState(this.currentBoxID, this.currentBoxName,
+      this.collectionName, this.boxNames);
+  const BoxPanelInfoState._empty() : this(0, "", "", const []);
 }

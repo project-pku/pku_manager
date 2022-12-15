@@ -17,23 +17,23 @@ class _SummaryPanelState extends State<SummaryPanel> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const TextPair("Nickname", "Rayquaza"),
+            TextPair("Nickname", "Rayquaza"),
             const Padding(padding: EdgeInsets.only(top: 6)),
-            const TextPair("OT", "HIRAM"),
+            TextPair("OT", "HIRAM"),
             const Padding(padding: EdgeInsets.only(top: 6)),
-            const TextPair("Origin Game", "Ruby"),
+            TextPair("Origin Game", "Ruby"),
             const Padding(padding: EdgeInsets.only(top: 6)),
-            const TextPair("Species", "Rayquaza"),
+            TextPair("Species", "Rayquaza"),
             const Padding(padding: EdgeInsets.only(top: 6)),
-            const TextPair("Form", ""),
+            TextPair("Form", ""),
             const Padding(padding: EdgeInsets.only(top: 6)),
-            const TextPair("Appearance", ""),
+            TextPair("Appearance", ""),
             const Spacer(),
             Center(
                 child: Image.network(
                     "https://img.pokemondb.net/sprites/black-white/anim/normal/rayquaza.gif")),
             const Spacer(),
-            const TextPair("Filename", "Rayquaza.pku"),
+            TextPair("Filename", "Rayquaza.pku"),
           ],
         ),
       ),
@@ -41,17 +41,14 @@ class _SummaryPanelState extends State<SummaryPanel> {
   }
 }
 
-class TextPair extends StatefulWidget {
-  const TextPair(this.name, this.value, {super.key});
+class TextPair extends StatelessWidget {
+  TextPair(String name, String value, {Key? key})
+      : this.widgetValue(name, Text(value), key: key);
+  const TextPair.widgetValue(this.name, this.value, {super.key});
 
   final String name;
-  final String value;
+  final Widget value;
 
-  @override
-  State<TextPair> createState() => _TextPairState();
-}
-
-class _TextPairState extends State<TextPair> {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -66,12 +63,12 @@ class _TextPairState extends State<TextPair> {
           ),
           child: Align(
             alignment: Alignment.centerRight,
-            child: Text("${widget.name}: "),
+            child: Text("$name: "),
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
-          child: Text(widget.value),
+          child: value,
         ),
       ],
     );

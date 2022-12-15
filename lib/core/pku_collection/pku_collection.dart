@@ -24,6 +24,8 @@ class PkuCollection {
     _writeConfig();
   }
 
+  List<String> get boxNames => _config.boxes;
+
   // Private methods
   String _configPath() => p.join(dir.path, "collection_config.json");
 

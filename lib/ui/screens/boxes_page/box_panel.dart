@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:collection/collection.dart';
 import 'package:pku_manager/main.dart';
 import 'package:pku_manager/ui/screens/boxes_page/summary_panel.dart';
-import '../../../notifiers/box_page_vm.dart';
+import '../../../view_models/box_page_vm.dart';
 import 'box_view.dart';
 
 final boxPageVMProvider = Provider(((ref) => BoxPageVM(pkucm)));

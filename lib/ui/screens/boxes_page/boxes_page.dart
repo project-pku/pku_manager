@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:pku_manager/ui/screens/boxes_page/box_panel.dart';
-import 'package:pku_manager/ui/screens/boxes_page/summary_panel.dart';
+import 'box_panel.dart';
+import 'summary_panel.dart';
 
-class BoxPage extends StatefulWidget {
+class BoxPage extends StatelessWidget {
   const BoxPage(this.saveLoaded, {super.key});
 
   final bool saveLoaded;
 
-  @override
-  State<BoxPage> createState() => _BoxPageState();
-}
-
-class _BoxPageState extends State<BoxPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +20,7 @@ class _BoxPageState extends State<BoxPage> {
             child: Column(
               children: [
                 const Expanded(child: BoxPanel()),
-                if (widget.saveLoaded) const Expanded(child: BoxPanel()),
+                if (saveLoaded) const Expanded(child: BoxPanel()),
               ],
             ),
           )

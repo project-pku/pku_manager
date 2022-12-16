@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../view_models/box_page_vm.dart';
+import 'box_panel.dart';
 
-class BoxView extends StatefulWidget {
+final boxViewStateProvider =
+    StateNotifierProvider<BoxViewStateNotifier, BoxViewState>(
+        ((ref) => ref.watch(boxPageVMProvider).boxViewN));
+
+class BoxView extends ConsumerWidget {
+  static const int boxWidth = 68;
+  static const int boxHeight = 56;
+  static const _defaultBorder = BorderSide(color: Colors.black, width: 1);
   const BoxView(this.rows, this.cols, {super.key});
 
   final int rows;
   final int cols;
 
   @override
-  State<BoxView> createState() => _BoxViewState();
-}
-
-class _BoxViewState extends State<BoxView> {
-  static const int boxWidth = 68;
-  static const int boxHeight = 56;
-  static const _defaultBorder = BorderSide(color: Colors.black, width: 1);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -26,24 +27,31 @@ class _BoxViewState extends State<BoxView> {
         border: Border(right: _defaultBorder, bottom: _defaultBorder),
       ),
       child: SizedBox(
-        width: (boxWidth * widget.cols).toDouble() + widget.cols + 1,
-        height: (boxHeight * widget.rows).toDouble() + widget.rows + 1,
+        width: (boxWidth * cols).toDouble() + cols + 1,
+        height: (boxHeight * rows).toDouble() + rows + 1,
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: widget.cols,
+            crossAxisCount: cols,
             childAspectRatio: boxWidth / boxHeight,
           ),
           itemBuilder: (context, i) => GridTile(
             child: Container(
               decoration: const BoxDecoration(
                   border: Border(top: _defaultBorder, left: _defaultBorder)),
-              child: Image.network(
-                  "https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/regular/venusaur.png"),
+              child: getSpriteAtIndex(ref, i),
             ),
           ),
-          itemCount: widget.rows * widget.cols,
+          itemCount: rows * cols,
         ),
       ),
     );
+  }
+
+  Image? getSpriteAtIndex(WidgetRef ref, int i) {
+    String? url = ref.watch(boxViewStateProvider).spriteUrls[i];
+    if (url != null) {
+      return Image.network(url);
+    }
+    return null;
   }
 }

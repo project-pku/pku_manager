@@ -1,61 +1,37 @@
-import 'dart:developer' as dev;
-import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as p;
-import '../json_util.dart';
+import 'package:pku_manager/core/pku_collection/json_configurable.dart';
 
-class PkuBox {
-  late final Directory dir;
-  late PkuBoxConfig config;
+class PkuBox with JsonConfigurable {
+  final Directory dir;
 
-  PkuBox(Directory collectionDir, String boxPath) {
-    dir = Directory(p.join(collectionDir.path, boxPath));
+  PkuBox(Directory collectionDir, String boxPath)
+      : dir = Directory(p.join(collectionDir.path, boxPath)) {
     readConfig();
   }
 
+  // JsonConfigurable implementation
+  @override
+  PkuBoxConfig config = PkuBoxConfig();
+
+  @override
   String configPath() => p.join(dir.path, "box_config.json");
-
-  readConfig() {
-    String rawjson = File(configPath()).readAsStringSync();
-    //TODO: add error checking for malformed json
-    var json = jsonDecode(rawjson);
-    config = PkuBoxConfig.fromJson(json);
-
-    dev.log("Just read a box config.");
-  }
-
-  writeConfig() {
-    var json = config.toJson();
-    File(configPath()).writeAsStringSync(prettyPrintJson(json));
-
-    dev.log("Just wrote a box config.");
-  }
 }
 
-class PkuBoxConfig {
-  late Map<int, String> slots;
-  late List<String> exported;
+class PkuBoxConfig with Jsonable {
+  Map<int, String> slots = const {};
+  List<String> exported = const [];
 
-  PkuBoxConfig({this.slots = const {}, this.exported = const []});
-
-  PkuBoxConfig.fromJson(Map<String, dynamic> json) {
-    exported = json['Exported'] != null
-        ? List<String>.from(json['Exported'])
-        : const [];
-
-    slots = json['Slots'] != null
-        ? Map<String, String>.from(json['Slots']).map((key, value) =>
-            MapEntry(int.parse(key), value)) //key: string -> int
-        : const {};
+  @override
+  fromJson(Map<String, dynamic> json) {
+    exported = List<String>.from(json['Exported'] ?? const []);
+    slots = Map<String, String>.from(json['Slots'] ?? const {})
+        .map((key, value) => MapEntry(int.parse(key), value));
   }
 
+  @override
   Map<String, dynamic> toJson() => {
         'Slots': slots,
         'Exported': exported,
       };
-
-  @override
-  String toString() {
-    return prettyPrintJson(toJson());
-  }
 }

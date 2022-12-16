@@ -1,74 +1,57 @@
-import 'dart:developer' as dev;
 import 'dart:io';
-import 'dart:convert';
 import 'package:path/path.dart' as p;
-import 'package:pku_manager/core/pku_collection/pku_box.dart';
-import '../json_util.dart';
+import 'pku_box.dart';
+import 'json_configurable.dart';
 
-class PkuCollection {
+class PkuCollection with JsonConfigurable<PkuCollectionConfig> {
   final Directory dir;
   late PkuBox currentBox;
-  late _PkuCollectionConfig _config;
 
   PkuCollection(this.dir) {
-    _readConfig(); //load config
-    currentBox = PkuBox(dir, _config.boxes[_config.currentBoxID]);
+    readConfig(); //load config
+    _loadBox(config.currentBoxID);
+  }
+
+  _loadBox(int boxID) {
+    currentBox = PkuBox(dir, config.boxes[boxID]);
   }
 
   // Public API
-  String get currentBoxName => _config.boxes[currentBoxID];
+  String get currentBoxName => config.boxes[currentBoxID];
 
-  int get currentBoxID => _config.currentBoxID;
+  int get currentBoxID => config.currentBoxID;
   set currentBoxID(int id) {
-    _config.currentBoxID = id;
-    _writeConfig();
+    config.currentBoxID = id;
+    writeConfig();
+    _loadBox(config.currentBoxID);
   }
 
-  List<String> get boxNames => _config.boxes;
+  List<String> get boxNames => config.boxes;
 
-  // Private methods
-  String _configPath() => p.join(dir.path, "collection_config.json");
+  // JsonConfigurable implementation
+  @override
+  PkuCollectionConfig config = PkuCollectionConfig();
 
-  _readConfig() {
-    String rawjson = File(_configPath()).readAsStringSync();
-    //TODO: add error checking for malformed json
-    var json = jsonDecode(rawjson);
-    _config = _PkuCollectionConfig.fromJson(json);
-
-    dev.log("Just read a pku collection config.");
-  }
-
-  _writeConfig() {
-    var json = _config.toJson();
-    File(_configPath()).writeAsStringSync(prettyPrintJson(json));
-
-    dev.log("Just wrote a pku collection config.");
-  }
+  @override
+  String configPath() => p.join(dir.path, "collection_config.json");
 }
 
-class _PkuCollectionConfig {
-  int currentBoxID;
-  Map<String, bool> globalFlags;
-  List<String> boxes;
+class PkuCollectionConfig with Jsonable {
+  int currentBoxID = 0;
+  Map<String, bool> globalFlags = const {};
+  List<String> boxes = const [];
 
-  _PkuCollectionConfig(
-      {this.boxes = const [],
-      this.globalFlags = const {},
-      this.currentBoxID = 0});
+  @override
+  fromJson(Map<String, dynamic> json) {
+    boxes = List<String>.from(json['Boxes'] ?? const []);
+    globalFlags = Map<String, bool>.from(json['Global Flags'] ?? const {});
+    currentBoxID = json['Current Box ID'] ?? 0;
+  }
 
-  _PkuCollectionConfig.fromJson(Map<String, dynamic> json)
-      : boxes = List<String>.from(json['Boxes'] ?? const []),
-        globalFlags = Map<String, bool>.from(json['Global Flags'] ?? const {}),
-        currentBoxID = json['Current Box ID'] ?? 0;
-
+  @override
   Map<String, dynamic> toJson() => {
         'Boxes': boxes,
         'Global Flags': globalFlags,
         'Current Box ID': currentBoxID,
       };
-
-  @override
-  String toString() {
-    return prettyPrintJson(toJson());
-  }
 }

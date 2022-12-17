@@ -7,6 +7,7 @@ final summaryPanelStateProvider =
     StateNotifierProvider<SummaryPanelStateNotifier, SummaryPanelState>(
         ((ref) => ref.watch(boxPageVMProvider).summaryPanelN));
 
+//TODO: make items in panel bounded
 class SummaryPanel extends ConsumerWidget {
   const SummaryPanel({super.key});
 
@@ -37,7 +38,7 @@ class SummaryPanel extends ConsumerWidget {
                 child: Image.network(
                     "https://img.pokemondb.net/sprites/black-white/anim/normal/rayquaza.gif")),
             const Spacer(),
-            TextPair("Filename", "Rayquaza.pku"),
+            TextPair("Filename", ref.watch(summaryPanelStateProvider).filename),
           ],
         ),
       ),
@@ -47,7 +48,13 @@ class SummaryPanel extends ConsumerWidget {
 
 class TextPair extends StatelessWidget {
   TextPair(String name, String value, {Key? key})
-      : this.widgetValue(name, Text(value), key: key);
+      : this.widgetValue(
+            name,
+            Text(
+              value,
+              overflow: TextOverflow.ellipsis,
+            ),
+            key: key);
   const TextPair.widgetValue(this.name, this.value, {super.key});
 
   final String name;

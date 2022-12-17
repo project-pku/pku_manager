@@ -10,10 +10,10 @@ class PkuBox with JsonConfigurable {
   PkuBox(Directory collectionDir, String boxPath)
       : dir = Directory(p.join(collectionDir.path, boxPath)) {
     readConfig();
-    readBox();
+    _readBox();
   }
 
-  readBox() {
+  _readBox() {
     List<FileSystemEntity> entities = dir.listSync(followLinks: false);
     for (var e in entities) {
       //can force rename all pku extensions in box to lower
@@ -27,6 +27,9 @@ class PkuBox with JsonConfigurable {
       pkus[p.basenameWithoutExtension(e.path)] = Pku.fromFile(e.path);
     }
   }
+
+  Pku? getPkuAtSlot(int i) => pkus[config.slots[i]];
+  String? getFileNameAtSlot(int i) => config.slots[i];
 
   // JsonConfigurable implementation
   @override

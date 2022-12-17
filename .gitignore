@@ -32,6 +32,9 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Generated Dart files  
+**/*.g.dart
+
 # Flutter platform folders
 # Will need to modify if any platform specific code gets added
 /windows/

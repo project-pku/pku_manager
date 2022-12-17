@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../view_models/box_page_vm.dart';
+import 'box_panel.dart';
 
-class SummaryPanel extends StatefulWidget {
+final summaryPanelStateProvider =
+    StateNotifierProvider<SummaryPanelStateNotifier, SummaryPanelState>(
+        ((ref) => ref.watch(boxPageVMProvider).summaryPanelN));
+
+class SummaryPanel extends ConsumerWidget {
   const SummaryPanel({super.key});
 
   @override
-  State<SummaryPanel> createState() => _SummaryPanelState();
-}
-
-class _SummaryPanelState extends State<SummaryPanel> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color.fromARGB(255, 179, 179, 179),
       child: Padding(
@@ -17,17 +19,19 @@ class _SummaryPanelState extends State<SummaryPanel> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextPair("Nickname", "Rayquaza"),
+            TextPair("Nickname", ref.watch(summaryPanelStateProvider).nickname),
             const Padding(padding: EdgeInsets.only(top: 6)),
-            TextPair("OT", "HIRAM"),
+            TextPair("OT", ref.watch(summaryPanelStateProvider).ot),
             const Padding(padding: EdgeInsets.only(top: 6)),
-            TextPair("Origin Game", "Ruby"),
+            TextPair(
+                "Origin Game", ref.watch(summaryPanelStateProvider).originGame),
             const Padding(padding: EdgeInsets.only(top: 6)),
-            TextPair("Species", "Rayquaza"),
+            TextPair("Species", ref.watch(summaryPanelStateProvider).species),
             const Padding(padding: EdgeInsets.only(top: 6)),
-            TextPair("Form", ""),
+            TextPair("Form", ref.watch(summaryPanelStateProvider).form),
             const Padding(padding: EdgeInsets.only(top: 6)),
-            TextPair("Appearance", ""),
+            TextPair(
+                "Appearance", ref.watch(summaryPanelStateProvider).appearance),
             const Spacer(),
             Center(
                 child: Image.network(

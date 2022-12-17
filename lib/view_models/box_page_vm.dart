@@ -6,11 +6,20 @@ class BoxPageVM {
   final PkuCollectionManager pkucm;
   final BoxPanelInfoStateNotifier boxInfoN = BoxPanelInfoStateNotifier();
   final BoxViewStateNotifier boxViewN = BoxViewStateNotifier();
+  final SummaryPanelStateNotifier summaryPanelN = SummaryPanelStateNotifier();
 
   BoxPageVM(this.pkucm) {
+    _updateWholePage();
+  }
+
+  _updateWholePage() {
     _updateInfoPanelState(); //init view
     _updateBoxViewState(); //update box view
+    _updateSummaryPanelState(); //update summary panel
   }
+
+  _updateSummaryPanelState() =>
+      summaryPanelN.updateState("", "", "", "", "", "");
 
   _updateInfoPanelState() => boxInfoN.updateState(
       pkucm.pkuCollection.currentBoxID,
@@ -26,8 +35,7 @@ class BoxPageVM {
 
   changeBox(int boxNum) {
     pkucm.pkuCollection.currentBoxID = boxNum; //edits model
-    _updateInfoPanelState(); //updates info panel
-    _updateBoxViewState(); //update box view
+    _updateWholePage();
   }
 }
 
@@ -73,4 +81,31 @@ class BoxViewState {
 
   const BoxViewState(this.spriteUrls);
   const BoxViewState._empty() : this(const {});
+}
+
+//------------
+// SummaryPanel
+//------------
+class SummaryPanelStateNotifier extends StateNotifier<SummaryPanelState> {
+  SummaryPanelStateNotifier() : super(const SummaryPanelState._empty());
+
+  void updateState(String nickname, String ot, String originGame,
+      String species, String form, String appearance) {
+    state =
+        SummaryPanelState(nickname, ot, originGame, species, form, appearance);
+  }
+}
+
+@immutable
+class SummaryPanelState {
+  final String nickname;
+  final String ot;
+  final String originGame;
+  final String species;
+  final String form;
+  final String appearance;
+
+  const SummaryPanelState(this.nickname, this.ot, this.originGame, this.species,
+      this.form, this.appearance);
+  const SummaryPanelState._empty() : this("", "", "", "", "", "");
 }

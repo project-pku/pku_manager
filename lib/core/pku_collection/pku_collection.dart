@@ -1,10 +1,17 @@
 import 'dart:io';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as p;
+import '../json_util.dart';
 import 'pku_box.dart';
-import 'json_configurable.dart';
+
+part 'pku_collection.g.dart';
 
 class PkuCollection with JsonConfigurable<PkuCollectionConfig> {
   final Directory dir;
+  @override
+  String configPath() => p.join(dir.path, "collection_config.json");
+  @override
+  PkuCollectionConfig config = PkuCollectionConfig();
   late PkuBox currentBox;
 
   PkuCollection(this.dir) {
@@ -27,31 +34,20 @@ class PkuCollection with JsonConfigurable<PkuCollectionConfig> {
   }
 
   List<String> get boxNames => config.boxes;
-
-  // JsonConfigurable implementation
-  @override
-  PkuCollectionConfig config = PkuCollectionConfig();
-
-  @override
-  String configPath() => p.join(dir.path, "collection_config.json");
 }
 
-class PkuCollectionConfig with Jsonable {
+@JsonSerializable()
+class PkuCollectionConfig implements Serializable {
+  @JsonKey(name: "Current Box ID", defaultValue: 0)
   int currentBoxID = 0;
+  @JsonKey(name: "Global Flags", defaultValue: {})
   Map<String, bool> globalFlags = const {};
+  @JsonKey(name: "Boxes", defaultValue: [])
   List<String> boxes = const [];
 
   @override
-  fromJson(Map<String, dynamic> json) {
-    boxes = List<String>.from(json['Boxes'] ?? const []);
-    globalFlags = Map<String, bool>.from(json['Global Flags'] ?? const {});
-    currentBoxID = json['Current Box ID'] ?? 0;
-  }
-
+  PkuCollectionConfig fromJson(Map<String, dynamic> json) =>
+      _$PkuCollectionConfigFromJson(json);
   @override
-  Map<String, dynamic> toJson() => {
-        'Boxes': boxes,
-        'Global Flags': globalFlags,
-        'Current Box ID': currentBoxID,
-      };
+  Map<String, dynamic> toJson() => _$PkuCollectionConfigToJson(this);
 }

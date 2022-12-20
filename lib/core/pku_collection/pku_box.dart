@@ -1,11 +1,18 @@
 import 'dart:io';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as p;
-import 'package:pku_manager/core/pku_collection/json_configurable.dart';
+import '../json_util.dart';
 import '../pku/pku.dart';
 
-class PkuBox with JsonConfigurable {
+part 'pku_box.g.dart';
+
+class PkuBox with JsonConfigurable<PkuBoxConfig> {
   final Directory dir;
-  Map<String, Pku> pkus = {};
+  @override
+  String configPath() => p.join(dir.path, "box_config.json");
+  @override
+  PkuBoxConfig config = PkuBoxConfig();
+  final Map<String, Pku> _pkus = {};
 
   PkuBox(Directory collectionDir, String boxPath)
       : dir = Directory(p.join(collectionDir.path, boxPath)) {
@@ -24,35 +31,27 @@ class PkuBox with JsonConfigurable {
         throw Exception("Loading new pkus is not supported yet.");
       }
 
-      pkus[p.basenameWithoutExtension(e.path)] = Pku.fromFile(e.path);
+      _pkus[p.basenameWithoutExtension(e.path)] = Pku.fromFile(e.path);
     }
   }
 
-  Pku? getPkuAtSlot(int i) => pkus[config.slots[i]];
+  // Public API
+  Pku? getPkuAtSlot(int i) => _pkus[getFileNameAtSlot(i)];
   String? getFileNameAtSlot(int i) => config.slots[i];
-
-  // JsonConfigurable implementation
-  @override
-  PkuBoxConfig config = PkuBoxConfig();
-
-  @override
-  String configPath() => p.join(dir.path, "box_config.json");
 }
 
-class PkuBoxConfig with Jsonable {
-  Map<int, String> slots = const {};
-  List<String> exported = const [];
+@JsonSerializable()
+class PkuBoxConfig implements Serializable {
+  @JsonKey(name: "Exported", defaultValue: [])
+  List<String> exported;
+  @JsonKey(name: "Slots", defaultValue: {})
+  Map<int, String> slots;
+
+  PkuBoxConfig({this.slots = const {}, this.exported = const []});
 
   @override
-  fromJson(Map<String, dynamic> json) {
-    exported = List<String>.from(json['Exported'] ?? const []);
-    slots = Map<String, String>.from(json['Slots'] ?? const {})
-        .map((key, value) => MapEntry(int.parse(key), value));
-  }
-
+  PkuBoxConfig fromJson(Map<String, dynamic> json) =>
+      _$PkuBoxConfigFromJson(json);
   @override
-  Map<String, dynamic> toJson() => {
-        'Slots': slots,
-        'Exported': exported,
-      };
+  Map<String, dynamic> toJson() => _$PkuBoxConfigToJson(this);
 }

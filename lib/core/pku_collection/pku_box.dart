@@ -38,11 +38,48 @@ class PkuBox with JsonConfigurable<PkuBoxConfig> {
   // Public API
   Pku? getPkuAtSlot(int i) => _pkus[getFileNameAtSlot(i)];
   String? getFileNameAtSlot(int i) => config.slots[i];
+
+  bool slotIsCheckedOut(int i) {
+    String? filename = getFileNameAtSlot(i);
+    if (filename == null) return false; //no pku exists at slot i
+    return config.exported.contains(filename);
+  }
+
+  bool checkOutPkuAtSlot(int i) {
+    String? filename = getFileNameAtSlot(i);
+    if (filename == null) return false; //no pku exists at slot i
+    config.exported.add(filename);
+    writeConfig();
+    return true; //check-out successful
+  }
+
+  void checkInPkuAtSlot(int i, Pku pku) {
+    //make sure pku was checked-out in the first place
+    if (!slotIsCheckedOut(i)) {
+      throw Exception("Can't check-in a pku that hasn't been checked-out.");
+    }
+
+    //overwrite pku in filesystem
+    String? filename = getFileNameAtSlot(i);
+    if (filename == null) {
+      throw Exception("This slot is checked-out but has no pku in it.");
+    }
+    String absolutePath = p.join(dir.path, filename);
+    File(absolutePath).writeAsStringSync(prettyPrintJson(pku.toJson()));
+
+    //update copy in pkuManager memory
+    _pkus[filename] = pku;
+
+    //remove from checked-out list
+    config.exported.remove(filename);
+
+    //TODO: make sure config is always in a valid state (e.g. remove duplicates on load, exported only contains pku in slots)
+  }
 }
 
 @JsonSerializable()
 class PkuBoxConfig implements Serializable {
-  @JsonKey(name: "Exported", defaultValue: [])
+  @JsonKey(name: "Checked-out", defaultValue: [])
   List<String> exported;
   @JsonKey(name: "Slots", defaultValue: {})
   Map<int, String> slots;

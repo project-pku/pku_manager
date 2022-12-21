@@ -23,4 +23,5 @@ class Pku {
     var json = JSON5.parse(rawjson);
     return Pku.fromJson(json);
   }
+  Map<String, dynamic> toJson() => _$PkuToJson(this);
 }

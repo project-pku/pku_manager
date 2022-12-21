@@ -26,12 +26,12 @@ class PkuBox with JsonConfigurable<PkuBoxConfig> {
       //can force rename all pku extensions in box to lower
       if (p.extension(e.path) != ".pku") continue;
 
-      String filename = p.basenameWithoutExtension(e.path);
+      String filename = p.basename(e.path);
       if (!config.slots.values.contains(filename)) {
         throw Exception("Loading new pkus is not supported yet.");
       }
 
-      _pkus[p.basenameWithoutExtension(e.path)] = Pku.fromFile(e.path);
+      _pkus[p.basename(e.path)] = Pku.fromFile(e.path);
     }
   }
 

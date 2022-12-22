@@ -79,9 +79,9 @@ class PkuBox with JsonConfigurable<PkuBoxConfig> {
 
 @JsonSerializable()
 class PkuBoxConfig implements Serializable {
-  @JsonKey(name: "Checked-out", defaultValue: [])
+  @JsonKey(name: "Checked-out")
   List<String> exported;
-  @JsonKey(name: "Slots", defaultValue: {})
+  @JsonKey(name: "Slots")
   Map<int, String> slots;
 
   PkuBoxConfig({this.slots = const {}, this.exported = const []});

@@ -62,6 +62,8 @@ class SlotView extends ConsumerWidget {
   }
 
   Image? getSpriteAtIndex(WidgetRef ref, int i) {
+    // return Image.network(
+    //     "https://img.pokemondb.net/sprites/lets-go-pikachu-eevee/normal/venusaur.png");
     String? url = ref.watch(boxViewStateProvider).spriteUrls[i];
     if (url != null) {
       return Image.network(url);

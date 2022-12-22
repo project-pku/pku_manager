@@ -49,7 +49,7 @@ class BoxPageVM {
       //slot contains a pku
       if (pku != null) {
         summaryPanelN.updateState(
-            "", "", "", pku.species, "", "", filename ?? "");
+            "", "", "", pku.species ?? "", "", "", filename ?? "");
         return;
       }
     }

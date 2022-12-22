@@ -34,6 +34,7 @@ migrate_working_dir/
 
 # Generated Dart files  
 **/*.g.dart
+**/*.freezed.dart
 
 # Flutter platform folders
 # Will need to modify if any platform specific code gets added

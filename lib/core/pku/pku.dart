@@ -1,27 +1,40 @@
 import 'dart:io';
+import 'dart:developer' as dev;
 
+import 'package:flutter/foundation.dart';
 import 'package:json5/json5.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'pku.freezed.dart';
 part 'pku.g.dart';
 
-@JsonSerializable(constructor: '_uninitialized')
-class Pku {
-  @JsonKey(name: "Species")
-  late final String species;
-  @JsonKey(name: "Personality Value")
-  late final int? personalityValue;
-  @JsonKey(name: "Trainer ID")
-  late final int? trainerID;
+@freezed
+class Pku with _$Pku {
+  const Pku._();
+  const factory Pku(
+          {@JsonKey(name: 'Species') String? species,
+          @JsonKey(name: 'Personality Value') int? personalityValue,
 
-  Pku._uninitialized(); //for generated code to access object's fields.
+          //TODO: custom converter that omits empty objects
+          @JsonKey(name: 'Game Info') @Default(GameInfo()) GameInfo gameInfo}) =
+      _Pku;
 
   factory Pku.fromJson(Map<String, dynamic> json) => _$PkuFromJson(json);
-
   factory Pku.fromFile(String path) {
     String rawjson = File(path).readAsStringSync();
     var json = JSON5.parse(rawjson);
-    return Pku.fromJson(json);
+    var pku = Pku.fromJson(json);
+    dev.log(pku.toJson().toString());
+    return pku;
   }
-  Map<String, dynamic> toJson() => _$PkuToJson(this);
+}
+
+@freezed
+class GameInfo with _$GameInfo {
+  const factory GameInfo(
+      {@JsonKey(name: "Trainer ID") int? trainerID,
+      @JsonKey(name: "Language") String? language}) = _GameInfo;
+
+  factory GameInfo.fromJson(Map<String, dynamic> json) =>
+      _$GameInfoFromJson(json);
 }

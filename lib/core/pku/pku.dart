@@ -1,40 +1,50 @@
 import 'dart:io';
 import 'dart:developer' as dev;
 
-import 'package:flutter/foundation.dart';
 import 'package:json5/json5.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:dart_json_mapper/dart_json_mapper.dart';
 
-part 'pku.freezed.dart';
-part 'pku.g.dart';
+@jsonSerializable
+@Json(ignoreDefaultMembers: true, processAnnotatedMembersOnly: true)
+class Pku {
+  @jsonConstructor
+  Pku(this.species, this.personalityValue, this.trainerID);
 
-@freezed
-class Pku with _$Pku {
-  const Pku._();
-  const factory Pku(
-          {@JsonKey(name: 'Species') String? species,
-          @JsonKey(name: 'Personality Value') int? personalityValue,
+  @JsonProperty(name: 'Species')
+  final String? species;
+  @JsonProperty(name: 'Personality Value')
+  final int? personalityValue;
+  @JsonProperty(name: 'Game Info/Trainer ID')
+  final int? trainerID;
 
-          //TODO: custom converter that omits empty objects
-          @JsonKey(name: 'Game Info') @Default(GameInfo()) GameInfo gameInfo}) =
-      _Pku;
+  //----------------------------
+  // Unmapped values boilerplate
+  //----------------------------
+  final Map<String, dynamic> _extraPropsMap = {};
+  @jsonProperty
+  void unmappedSet(String name, dynamic value) {
+    _extraPropsMap[name] = value;
+  }
 
-  factory Pku.fromJson(Map<String, dynamic> json) => _$PkuFromJson(json);
+  @jsonProperty
+  Map<String, dynamic> unmappedGet() {
+    return _extraPropsMap;
+  }
+  //----------------------------
+
+  String toJson({bool prettyPrint = false}) => JsonMapper.serialize(
+      this, prettyPrint ? null : const SerializationOptions(indent: ''));
+
+  factory Pku.fromJson(Map<String, dynamic> json) {
+    var pku = JsonMapper.deserialize<Pku>(json);
+    if (pku == null) throw Exception("pku Parsing exception...");
+    return pku;
+  }
   factory Pku.fromFile(String path) {
     String rawjson = File(path).readAsStringSync();
     var json = JSON5.parse(rawjson);
     var pku = Pku.fromJson(json);
-    dev.log(pku.toJson().toString());
+    dev.log(pku.toJson(prettyPrint: true));
     return pku;
   }
-}
-
-@freezed
-class GameInfo with _$GameInfo {
-  const factory GameInfo(
-      {@JsonKey(name: "Trainer ID") int? trainerID,
-      @JsonKey(name: "Language") String? language}) = _GameInfo;
-
-  factory GameInfo.fromJson(Map<String, dynamic> json) =>
-      _$GameInfoFromJson(json);
 }

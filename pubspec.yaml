@@ -40,6 +40,7 @@ dependencies:
   json5: ^0.8.0
   freezed_annotation: ^2.2.0
   json_annotation: ^4.7.0
+  dart_json_mapper:
   
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

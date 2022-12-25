@@ -65,7 +65,7 @@ class PkuBox with JsonConfigurable<PkuBoxConfig> {
       throw Exception("This slot is checked-out but has no pku in it.");
     }
     String absolutePath = p.join(dir.path, filename);
-    File(absolutePath).writeAsStringSync(prettyPrintJson(pku.toJson()));
+    File(absolutePath).writeAsStringSync(pku.toJson(prettyPrint: true));
 
     //update copy in pkuManager memory
     _pkus[filename] = pku;

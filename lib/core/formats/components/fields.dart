@@ -1,29 +1,34 @@
 import 'package:meta/meta.dart';
 
 abstract class Field<T> {
-  T value;
-  Field(this.value);
+  T get value;
+  set value(T val);
 }
 
 abstract class ListField<T> extends Field<List<T>> {
-  int? fixedLength;
+  int get length;
 
   @protected
-  crashIfListInvalid(List<T> value) {
-    if (value.length != fixedLength) {
-      throw ArgumentError.value(value,
-          "The number of elements in this field must equal $fixedLength");
+  T getElement(int index);
+  @protected
+  void setElement(int index, T val);
+
+  @override
+  List<T> get value {
+    List<T> temp = [];
+    for (int i = 0; i < length; i++) {
+      temp.add(getElement(i));
     }
+    return temp;
   }
 
   @override
-  set value(List<T> value) {
-    crashIfListInvalid(value);
-    super.value = value;
+  set value(List<T> vals) {
+    for (int i = 0; i < length; i++) {
+      setElement(i, vals[i]);
+    }
   }
 
-  ListField(super.value, {this.fixedLength}) {
-    crashIfListInvalid(value);
-  }
-  operator [](index) => value[index];
+  operator [](index) => getElement(index);
+  operator []=(index, val) => setElement(index, val);
 }

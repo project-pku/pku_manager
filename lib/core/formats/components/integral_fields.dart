@@ -1,4 +1,5 @@
-import 'dart:math';
+import 'package:meta/meta.dart';
+
 import 'fields.dart';
 
 mixin Bounded {
@@ -15,64 +16,24 @@ mixin Bounded {
   }
 }
 
-int _getMaxInt(int bits) {
-  if (bits > 0 && bits < 64) {
-    return pow(2, bits).toInt() - 1;
-  } else if (bits == 64) {
-    return 9223372036854775807;
-  } else {
-    throw ArgumentError.value(bits, "n must be an integer from 0 to 64.");
+abstract class IntegralField extends Field<int> with Bounded {
+  @protected
+  void setValueUnchecked(int val);
+
+  @override
+  set value(int val) {
+    _crashIfValNotInRange(val);
+    setValueUnchecked(val);
   }
 }
 
-class IntegralField extends Field<int> with Bounded {
-  @override
-  final int? min;
-  @override
-  final int? max;
+abstract class IntegralListField extends ListField<int> with Bounded {
+  @protected
+  void setElementUnchecked(int index, int val);
 
   @override
-  set value(int x) {
-    _crashIfValNotInRange(x);
-    super.value = x;
+  void setElement(int index, int val) {
+    _crashIfValNotInRange(val);
+    setElementUnchecked(index, val);
   }
-
-  IntegralField({int value = 0, this.min, this.max}) : super(value) {
-    _crashIfValNotInRange(value);
-  }
-
-  IntegralField.fromBits(int bits) : this(min: 0, max: _getMaxInt(bits));
-  IntegralField.fromBytes(int bytes) : this.fromBits(bytes * 8);
-}
-
-class IntegralListField extends ListField<int> with Bounded {
-  @override
-  final int? min;
-  @override
-  final int? max;
-
-  @override
-  crashIfListInvalid(List<int> value) {
-    super.crashIfListInvalid(value);
-    for (int x in value) {
-      _crashIfValNotInRange(x);
-    }
-  }
-
-  IntegralListField({List<int>? value, this.min, this.max, super.fixedLength})
-      : super(value ??
-            (fixedLength != null
-                ? List<int>.generate(fixedLength, (i) => 0)
-                : const [])) {
-    crashIfListInvalid(this.value);
-  }
-
-  IntegralListField.fromBits(int bits, {int? fixedLength})
-      : this(fixedLength: fixedLength, min: 0, max: _getMaxInt(bits));
-  IntegralListField.fromBytes(int bytes, {int? fixedLength})
-      : this.fromBits(bytes * 8, fixedLength: fixedLength);
-}
-
-class BooleanField extends Field<bool> {
-  BooleanField({bool value = false}) : super(value);
 }

@@ -20,7 +20,7 @@ class PkuBox with JsonConfigurable<PkuBoxConfig> {
     _readBox();
   }
 
-  _readBox() {
+  void _readBox() {
     List<FileSystemEntity> entities = dir.listSync(followLinks: false);
     for (var e in entities) {
       //can force rename all pku extensions in box to lower

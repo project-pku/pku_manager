@@ -9,7 +9,7 @@ mixin Bounded {
   bool _withinRange(int val) =>
       !(min != null && val < min! || max != null && val > max!);
 
-  _crashIfValNotInRange(int val) {
+  void _crashIfValNotInRange(int val) {
     if (!_withinRange(val)) {
       throw ArgumentError.value(val, "value must be within [$min, $max].");
     }

@@ -8,7 +8,8 @@ const standardBitSizes = <int>{8, 16, 32, 64};
 bool _isByteLevel(int bitOffset, int bitLength) =>
     bitOffset == 0 && standardBitSizes.contains(bitLength);
 
-writeBits(ByteData data, int offset, int bitOffset, int bitLength, int value) {
+void writeBits(
+    ByteData data, int offset, int bitOffset, int bitLength, int value) {
   _isByteLevel(bitOffset, bitLength)
       ? _writeBytes(data, offset, bitLength ~/ 8, value) //byte level
       : _writeBits(data, offset, bitOffset, bitLength, value); //bit level
@@ -20,7 +21,7 @@ int readBits(ByteData data, int offset, int bitOffset, int bitLength) {
       : _readBits(data, offset, bitOffset, bitLength); //bit level
 }
 
-_writeBytes(ByteData data, int offset, int length, int value) {
+void _writeBytes(ByteData data, int offset, int length, int value) {
   switch (length) {
     case 1:
       data.setUint8(offset, value);

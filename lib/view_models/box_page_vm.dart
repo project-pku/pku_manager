@@ -16,13 +16,13 @@ class BoxPageVM {
   //------------
   // Public API
   //------------
-  changeBox(int boxNum) {
+  void changeBox(int boxNum) {
     pkucm.pkuCollection.currentBoxID = boxNum; //edits model
     _selectedSlot = null;
     _updateWholePage();
   }
 
-  selectSlot(int slotID) {
+  void selectSlot(int slotID) {
     _selectedSlot = slotID;
     _updateBoxViewState(); //redraw box view
     _updateSummaryPanelState(); //redraw summary panel
@@ -33,13 +33,13 @@ class BoxPageVM {
   //------------
   int? _selectedSlot;
 
-  _updateWholePage() {
+  void _updateWholePage() {
     _updateInfoPanelState(); //init view
     _updateBoxViewState(); //update box view
     _updateSummaryPanelState(); //update summary panel
   }
 
-  _updateSummaryPanelState() {
+  void _updateSummaryPanelState() {
     //slot selected
     if (_selectedSlot != null) {
       Pku? pku = pkucm.pkuCollection.currentBox.getPkuAtSlot(_selectedSlot!);
@@ -58,13 +58,13 @@ class BoxPageVM {
     summaryPanelN.updateState("", "", "", "", "", "", "");
   }
 
-  _updateInfoPanelState() => boxInfoN.updateState(
+  void _updateInfoPanelState() => boxInfoN.updateState(
       pkucm.pkuCollection.currentBoxID,
       pkucm.pkuCollection.currentBoxName,
       "pku/OT",
       pkucm.pkuCollection.boxNames);
 
-  _updateBoxViewState() => boxViewN.updateState({
+  void _updateBoxViewState() => boxViewN.updateState({
         for (int slot in pkucm.pkuCollection.currentBox.config.slots.keys)
           slot:
               "https://raw.githubusercontent.com/project-pku/pkuSprite/master/util/box/regular/unknown.png"

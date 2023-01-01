@@ -9,7 +9,7 @@ class PkuCollectionManager {
   /// Will crash otherwise...
   PkuCollection get pkuCollection => _pkuCollection!;
 
-  loadCollection(String path) {
+  void loadCollection(String path) {
     _pkuCollection = PkuCollection(Directory(path));
   }
 }

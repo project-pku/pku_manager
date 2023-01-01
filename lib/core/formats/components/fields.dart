@@ -29,6 +29,6 @@ abstract class ListField<T> extends Field<List<T>> {
     }
   }
 
-  operator [](index) => getElement(index);
+  T operator [](index) => getElement(index);
   operator []=(index, val) => setElement(index, val);
 }

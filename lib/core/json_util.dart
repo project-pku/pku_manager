@@ -20,7 +20,7 @@ mixin JsonConfigurable<T extends Serializable> {
 
   String configPath();
 
-  readConfig() {
+  void readConfig() {
     String rawjson = File(configPath()).readAsStringSync();
     //TODO: add error checking for malformed json
     var json = jsonDecode(rawjson);
@@ -29,7 +29,7 @@ mixin JsonConfigurable<T extends Serializable> {
     dev.log("Just read a $runtimeType config.");
   }
 
-  writeConfig() {
+  void writeConfig() {
     var json = config.toJson();
     File(configPath()).writeAsStringSync(prettyPrintJson(json));
 

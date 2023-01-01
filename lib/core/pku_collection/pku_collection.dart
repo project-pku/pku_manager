@@ -19,7 +19,7 @@ class PkuCollection with JsonConfigurable<PkuCollectionConfig> {
     _loadBox(config.currentBoxID);
   }
 
-  _loadBox(int boxID) {
+  void _loadBox(int boxID) {
     currentBox = PkuBox(dir, config.boxes[boxID]);
   }
 

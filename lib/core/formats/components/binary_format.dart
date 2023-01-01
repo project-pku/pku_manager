@@ -13,7 +13,7 @@ abstract class BinaryFormat extends PkmnFormat {
   @override
   Uint8List toBytes() => dataBlock.data.buffer.asUint8List();
   @override
-  fromBytes(Uint8List data) => dataBlock.data = data.buffer.asByteData();
+  void fromBytes(Uint8List data) => dataBlock.data = data.buffer.asByteData();
 }
 
 class BinaryDataBlock {

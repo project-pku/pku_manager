@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:developer' as dev;
 
-String prettyPrintJson(Map<String, dynamic> json) {
+typedef JsonMap = Map<String, dynamic>;
+
+String prettyPrintJson(JsonMap json) {
   JsonEncoder encoder = const JsonEncoder.withIndent('  ');
   return encoder.convert(json);
 }
@@ -11,8 +13,8 @@ String prettyPrintJson(Map<String, dynamic> json) {
 
 abstract class Serializable<T> {
   //would rather an abstract factory here but dart doesn't support it.
-  T fromJson(Map<String, dynamic> json);
-  Map<String, dynamic> toJson();
+  T fromJson(JsonMap json);
+  JsonMap toJson();
 }
 
 mixin JsonConfigurable<T extends Serializable> {

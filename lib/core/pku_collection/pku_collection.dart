@@ -46,8 +46,8 @@ class PkuCollectionConfig implements Serializable {
   List<String> boxes = const [];
 
   @override
-  PkuCollectionConfig fromJson(Map<String, dynamic> json) =>
+  PkuCollectionConfig fromJson(JsonMap json) =>
       _$PkuCollectionConfigFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$PkuCollectionConfigToJson(this);
+  JsonMap toJson() => _$PkuCollectionConfigToJson(this);
 }

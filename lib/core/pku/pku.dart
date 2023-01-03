@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 
 import 'package:json5/json5.dart';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
+import '../json_util.dart' as jsonutil;
 
 @jsonSerializable
 @Json(ignoreDefaultMembers: true, processAnnotatedMembersOnly: true)
@@ -44,14 +45,14 @@ class Pku {
   //----------------------------
   // Unmapped values boilerplate
   //----------------------------
-  final Map<String, dynamic> _extraPropsMap = {};
+  final jsonutil.JsonMap _extraPropsMap = {};
   @jsonProperty
   void unmappedSet(String name, dynamic value) {
     _extraPropsMap[name] = value;
   }
 
   @jsonProperty
-  Map<String, dynamic> unmappedGet() {
+  jsonutil.JsonMap unmappedGet() {
     return _extraPropsMap;
   }
 
@@ -61,7 +62,7 @@ class Pku {
   String toJson({bool prettyPrint = false}) => JsonMapper.serialize(
       this, prettyPrint ? null : const SerializationOptions(indent: ''));
 
-  factory Pku.fromJson(Map<String, dynamic> json) {
+  factory Pku.fromJson(jsonutil.JsonMap json) {
     var pku = JsonMapper.deserialize<Pku>(json);
     if (pku == null) throw Exception("pku Parsing exception...");
     return pku;

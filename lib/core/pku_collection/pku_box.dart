@@ -87,8 +87,7 @@ class PkuBoxConfig implements Serializable {
   PkuBoxConfig({this.slots = const {}, this.exported = const []});
 
   @override
-  PkuBoxConfig fromJson(Map<String, dynamic> json) =>
-      _$PkuBoxConfigFromJson(json);
+  PkuBoxConfig fromJson(JsonMap json) => _$PkuBoxConfigFromJson(json);
   @override
-  Map<String, dynamic> toJson() => _$PkuBoxConfigToJson(this);
+  JsonMap toJson() => _$PkuBoxConfigToJson(this);
 }
